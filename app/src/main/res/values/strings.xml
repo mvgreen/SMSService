@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SMS Service</string>
+    <string name="ip_hint">IP-адрес</string>
+    <string name="id_hint">ID устройства</string>
+    <string name="text_expected_id">Ожидаемый ID:</string>
+    <string name="btn_confirm_text">Подтвердить</string>
+    <string name="text_log">Лог:</string>
 </resources>
