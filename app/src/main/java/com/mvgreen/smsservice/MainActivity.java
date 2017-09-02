@@ -3,6 +3,10 @@ package com.mvgreen.smsservice;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +45,27 @@ public class MainActivity extends Activity {
         // TODO предусматривать открытие свернутого приложения с запущенным сервисом
         Button btn = (Button) findViewById(R.id.btn_controll_service);
         btn.setText(getString(R.string.btn_start_service));
+
+        // TODO добавить возможность копировать лог
+        final EditText edittext = (EditText) findViewById(R.id.edit_log);
+        edittext.setInputType(InputType.TYPE_NULL);
+        edittext.setSingleLine(false);
+        edittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                edittext.setSelection(edittext.getText().length());
+            }
+        });
     }
 
     public void onConfirmSettings(View view) {
