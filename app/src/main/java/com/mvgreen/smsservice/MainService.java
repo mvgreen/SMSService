@@ -14,7 +14,7 @@ public class MainService extends Service{
     }
 
     public static boolean isOnline() {
-        return instance.isActive;
+        return getInstance().isActive;
     }
 
     public static MainService getInstance() {
