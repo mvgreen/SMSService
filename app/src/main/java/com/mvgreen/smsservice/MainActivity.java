@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,11 +16,19 @@ public class MainActivity extends Activity {
     private static final String SERVER_IP = "SERVER_IP";
     private static final String DEVICE_ID = "DEVICE_ID";
     private static final String EXPECTED_ID = "EXPECTED_ID";
+    private static MainActivity instance;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // TODO обновлять при повторном открытии
+        instance = this;
+        Status.toast(LOG_TAG, "В onCreate");
         initView();
     }
 
@@ -31,16 +38,17 @@ public class MainActivity extends Activity {
     }
 
     private void initView() {
+        Status.toast(LOG_TAG, "В initView");
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 
         EditText temp = ((EditText) findViewById(R.id.edit_ip));
         temp.setText(prefs.getString(SERVER_IP, ""));
 
         temp = ((EditText) findViewById(R.id.edit_deviceid));
-        temp.setText(prefs.getString(DEVICE_ID, ""));
+        temp.setText(prefs.getString(DEVICE_ID, "1"));
 
         temp = ((EditText) findViewById(R.id.edit_expected_id));
-        temp.setText(prefs.getString(EXPECTED_ID, ""));
+        temp.setText(prefs.getString(EXPECTED_ID, "1"));
 
         // TODO предусматривать открытие свернутого приложения с запущенным сервисом
         Button btn = (Button) findViewById(R.id.btn_controll_service);
