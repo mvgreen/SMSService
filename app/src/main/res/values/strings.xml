@@ -7,8 +7,12 @@
     <string name="text_log">Лог:</string>
     <string name="btn_start_service">Запустить сервис</string>
     <string name="btn_stop_service">Остановить сервис</string>
-    <string name="success">Успешно изменено</string>
-    <string name="failed">Не удалось сохранить</string>
-    <string name="stop_service">Для изменения настроек остановите сервис!</string>
+    <string name="success">Успешно</string>
+    <string name="failed">Не удалось</string>
+    <string name="warning_stop_service_first">Для изменения настроек остановите сервис!</string>
     <string name="service_stop">Сервис остановлен</string>
+    <string name="attempt_to_stop">Остановка сервиса…</string>
+    <string name="attempt_to_start">Запуск сервиса…</string>
+    <string name="stop_success_later">Успешно, остановка может занять некоторое время</string>
+    <string name="service_started">Сервис запущен</string>
 </resources>

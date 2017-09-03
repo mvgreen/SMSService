@@ -6,20 +6,15 @@ import android.os.IBinder;
 
 public class MainService extends Service{
 
+    private static final String LOG_TAG = "Service";
     private static MainService instance;
     private boolean isActive;
 
-    private MainService() {
-        isActive = false;
+    static boolean isOnline() {
+        return instance != null && getInstance().isActive;
     }
 
-    public static boolean isOnline() {
-        return getInstance().isActive;
-    }
-
-    public static MainService getInstance() {
-        if (instance == null)
-            instance = new MainService();
+    private static MainService getInstance() {
         return instance;
     }
 
@@ -28,11 +23,21 @@ public class MainService extends Service{
         return null;
     }
 
-    public static void stop() {
-
+    public void onCreate() {
+        instance = this;
+        super.onCreate();
     }
 
-    public static void start() {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        isActive = true;
+        Status.toast(LOG_TAG, getString(R.string.service_started));
+        return super.onStartCommand(intent, flags, startId);
+    }
 
+    @Override
+    public void onDestroy() {
+        isActive = false;
+        super.onDestroy();
     }
 }

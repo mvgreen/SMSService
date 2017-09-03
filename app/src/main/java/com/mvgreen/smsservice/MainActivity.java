@@ -1,6 +1,7 @@
 package com.mvgreen.smsservice;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -90,17 +91,23 @@ public class MainActivity extends Activity {
             else
                 Status.toast(LOG_TAG, getString(R.string.failed));
         } else
-            Status.toast(LOG_TAG, getString(R.string.stop_service));
+            Status.toast(LOG_TAG, getString(R.string.warning_stop_service_first));
     }
 
     public void onToggleService(View view) {
         if (MainService.isOnline()) {
-            MainService.stop();
-            ((Button) view).setText(getString(R.string.btn_stop_service));
+            Status.toast(LOG_TAG, getString(R.string.attempt_to_stop));
+            if (stopService(new Intent(this, MainService.class))) {
+                Status.toast(LOG_TAG, getString(R.string.stop_success_later));
+                ((Button) view).setText(getString(R.string.btn_start_service));
+            }
+            else
+                Status.toast(LOG_TAG, getString(R.string.failed));
         }
         else {
-            MainService.start();
-            ((Button) view).setText(getString(R.string.btn_start_service));
+            Status.toast(LOG_TAG, getString(R.string.attempt_to_start));
+            startService(new Intent(this, MainService.class));
+            ((Button) view).setText(getString(R.string.btn_stop_service));
         }
     }
 }
