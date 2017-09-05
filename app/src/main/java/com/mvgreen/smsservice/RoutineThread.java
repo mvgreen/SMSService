@@ -11,6 +11,7 @@ public class RoutineThread extends Thread {
     private static final String LOG_TAG = "Routine";
     private boolean active;
     private static RoutineThread instance;
+    private final String EXPECTED_ID = "expected_id";
 
     @Override
     public void run() {
@@ -26,41 +27,36 @@ public class RoutineThread extends Thread {
     }
 
     private void routine() {
-        /*long startTime = System.currentTimeMillis();
-
         SharedPreferences prefs = MainActivity.getInstance().getPreferences(Context.MODE_PRIVATE);
-        //final int expectedID = prefs.getInt(key, 1);
 
-        final ArrayList<Record> fromServer = Data.load(prefs.getInt(key, 1));
+        final ArrayList<Record> records = Data.load(prefs.getInt(EXPECTED_ID, 1));
 
         MainActivity.getInstance().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.getInstance(), "Новых сообщений: " + fromServer.size(), Toast.LENGTH_SHORT).show();
+                Status.toast(LOG_TAG,"Новых сообщений: " + records.size());
             }
         });
-        ArrayList<Record> records = DataReplacer.getInstance().load();
 
-        if (records.isEmpty() && fromServer.isEmpty())
-            return (System.currentTimeMillis() - startTime);
+        if (records.isEmpty())
+            return;
 
-        int i;
-        for (i = 0; i < records.size(); i++) {
-            SMSMessenger.send(records.get(i));
-        }
+        for (Record r : records)
+            SMSModule.send(r);
 
-        // TODO продолжать работу, ориентируясь на данные сохраненные в оперативке.
-        // TODO зависит от id последней записи, а не id последнего отправленного
-        if (!fromServer.isEmpty() && !prefs.edit().putInt(key, fromServer.get(fromServer.size() - 1).id + 1).commit())
-            Status.e("Routine", "Не удалось сохранить ID");
+        int newExpected = records.isEmpty() ? prefs.getInt(EXPECTED_ID, 1) : (records.get(records.size() - 1).id + 1);
 
-        if (!prefs.edit().putInt("SMS Count", prefs.getInt("SMS Count", 0) + i).commit())
-            Status.e("Routine", "Не удалось сохранить статистику");
+        // TODO продолжать работу, ориентируясь на данные сохраненные в оперативке
+        if (records.isEmpty())
+            Status.toast(LOG_TAG, "Новых сообщений нет");
+        else if (!prefs.edit().putInt(EXPECTED_ID, records.get(records.size() - 1).id + 1).commit())
+            Status.toast(LOG_TAG, "Новый ожидаемый ID не сохранен");
+        else
+            Status.toast(LOG_TAG, "Новый ожидаемый ID: " + newExpected);
 
-        MainActivity.getInstance().updateStatistics();
+        if (!prefs.edit().putInt("SMS Count", prefs.getInt("SMS Count", 0) + records.size()).commit())
+            Status.toast(LOG_TAG, "Не удалось сохранить статистику");
 
-        return (System.currentTimeMillis() - startTime);
-        */
     }
 
     void stopRoutine() {
