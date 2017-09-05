@@ -15,4 +15,5 @@
     <string name="attempt_to_start">Запуск сервиса…</string>
     <string name="stop_success_later">Успешно, остановка может занять некоторое время</string>
     <string name="service_started">Сервис запущен</string>
+    <string name="unexpected_start">Непредвиденный запуск второго сервиса</string>
 </resources>
