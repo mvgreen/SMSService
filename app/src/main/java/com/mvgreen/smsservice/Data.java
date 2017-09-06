@@ -43,8 +43,6 @@ public class Data {
                 r.id = o.getInt("id");
                 r.tel = o.getString("tel");
                 r.text = o.getString("text");
-                r.date_timestamp = o.getInt("date_timestamp");
-                r.date = o.getString("date");
                 ret.add(r);
                 id++;
             }

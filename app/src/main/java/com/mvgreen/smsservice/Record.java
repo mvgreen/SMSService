@@ -4,7 +4,12 @@ public class Record {
     public int id;
     public String tel;
     public String text;
-    public int date_timestamp;
-    public String date;
-    public boolean accepted;
+
+    Record() {}
+
+    Record(int id, String tel, String text) {
+        this.id = id;
+        this.tel = tel;
+        this.text = text;
+    }
 }
