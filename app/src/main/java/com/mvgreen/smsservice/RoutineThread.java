@@ -45,7 +45,7 @@ public class RoutineThread extends Thread {
 
         SharedPreferences prefs = MainActivity.getInstance().getPreferences(Context.MODE_PRIVATE);
 
-         final ArrayList<Record> records = Data.load(prefs.getString(EXPECTED_ID, ""));
+         final ArrayList<Record> records = Data.load();
 
          if (records.isEmpty()) {
             Status.toast(LOG_TAG, "Новых сообщений нет");
