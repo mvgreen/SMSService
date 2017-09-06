@@ -10,7 +10,7 @@ class Status {
         MainActivity.getInstance().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.getInstance(), s, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.getInstance(), s, Toast.LENGTH_SHORT).show();
                 ((EditText) MainActivity.getInstance().findViewById(R.id.edit_log)).getText().append("\n" + s);
             }
         });

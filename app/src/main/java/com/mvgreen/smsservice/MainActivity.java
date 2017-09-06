@@ -14,9 +14,10 @@ import android.widget.EditText;
 public class MainActivity extends Activity {
 
     private static final String LOG_TAG = "MainActivity";
-    private static final String SERVER_IP = "SERVER_IP";
-    private static final String DEVICE_ID = "DEVICE_ID";
-    private static final String EXPECTED_ID = "EXPECTED_ID";
+    // TODO сделать id числами?
+    public static final String SERVER_IP = "SERVER_IP";
+    public static final String DEVICE_ID = "DEVICE_ID";
+    public static final String EXPECTED_ID = "EXPECTED_ID";
     private static MainActivity instance;
 
     public static MainActivity getInstance() {
@@ -40,17 +41,7 @@ public class MainActivity extends Activity {
 
     private void initView() {
         Status.toast(LOG_TAG, "В initView");
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-
-        EditText temp = ((EditText) findViewById(R.id.edit_ip));
-        temp.setText(prefs.getString(SERVER_IP, ""));
-
-        temp = ((EditText) findViewById(R.id.edit_deviceid));
-        temp.setText(prefs.getString(DEVICE_ID, "1"));
-
-        temp = ((EditText) findViewById(R.id.edit_expected_id));
-        temp.setText(prefs.getString(EXPECTED_ID, "1"));
-
+        updateInterface();
         // TODO предусматривать открытие свернутого приложения с запущенным сервисом
         Button btn = (Button) findViewById(R.id.btn_controll_service);
         btn.setText(getString(R.string.btn_start_service));
@@ -94,20 +85,52 @@ public class MainActivity extends Activity {
             Status.toast(LOG_TAG, getString(R.string.warning_stop_service_first));
     }
 
-    public void onToggleService(View view) {
+    public void toggleService(View view) {
         if (MainService.isOnline()) {
             Status.toast(LOG_TAG, getString(R.string.attempt_to_stop));
             if (stopService(new Intent(this, MainService.class))) {
-                Status.toast(LOG_TAG, getString(R.string.stop_success_later));
+                Status.toast(LOG_TAG, "Успешно, дождитесь уведомления об остановке потока");
                 ((Button) view).setText(getString(R.string.btn_start_service));
             }
             else
                 Status.toast(LOG_TAG, getString(R.string.failed));
         }
-        else {
+        else if (isParamsExists()){
             Status.toast(LOG_TAG, getString(R.string.attempt_to_start));
             startService(new Intent(this, MainService.class));
             ((Button) view).setText(getString(R.string.btn_stop_service));
         }
+    }
+
+    // TODO делать проверку валидности параметров
+    private boolean isParamsExists() {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        String serverIP = prefs.getString(SERVER_IP, "");
+        String deviceID = prefs.getString(DEVICE_ID, "");
+        String expectedID = prefs.getString(EXPECTED_ID, "");
+
+        if (serverIP.contentEquals("") || deviceID.contentEquals("") || expectedID.contentEquals("")) {
+            Status.toast(LOG_TAG, "Сначала заполните все поля!");
+            return false;
+        }
+        return true;
+    }
+
+    public void updateInterface() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
+                EditText temp = ((EditText) findViewById(R.id.edit_ip));
+                temp.setText(prefs.getString(SERVER_IP, ""));
+
+                temp = ((EditText) findViewById(R.id.edit_deviceid));
+                temp.setText(prefs.getString(DEVICE_ID, "1"));
+
+                temp = ((EditText) findViewById(R.id.edit_expected_id));
+                temp.setText(prefs.getString(EXPECTED_ID, "1"));
+            }
+        });
     }
 }

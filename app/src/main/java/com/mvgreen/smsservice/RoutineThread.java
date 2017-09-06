@@ -2,54 +2,65 @@ package com.mvgreen.smsservice;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import static com.mvgreen.smsservice.MainActivity.*;
 
 public class RoutineThread extends Thread {
 
     private static final String LOG_TAG = "Routine";
     private boolean active;
     private static RoutineThread instance;
-    private final String EXPECTED_ID = "expected_id";
 
     @Override
     public void run() {
         instance = this;
+        long workTime = 0;
         while (true) {
+            timeout(workTime);
             synchronized (this) {
                 if (!active)
                     return;
             }
-
-            routine();
+            workTime = routine();
+            MainActivity.getInstance().updateInterface();
         }
     }
 
-    private void routine() {
+    private void timeout(long workTime) {
+        Status.toast(LOG_TAG, "Время работы: " + (workTime / 1000) + " секунд");
+        try {
+            TimeUnit.SECONDS.sleep(5 - (workTime / 1000));
+        } catch (InterruptedException e) {
+            active = false;
+            stopRoutine();
+            e.printStackTrace();
+        }
+    }
+
+    private long routine() {
+        long time = System.currentTimeMillis();
+
         SharedPreferences prefs = MainActivity.getInstance().getPreferences(Context.MODE_PRIVATE);
 
-        final ArrayList<Record> records = Data.load(prefs.getInt(EXPECTED_ID, 1));
+         final ArrayList<Record> records = Data.load(prefs.getString(EXPECTED_ID, ""));
 
-        MainActivity.getInstance().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Status.toast(LOG_TAG,"Новых сообщений: " + records.size());
-            }
-        });
+         if (records.isEmpty()) {
+            Status.toast(LOG_TAG, "Новых сообщений нет");
+            return System.currentTimeMillis() - time;
+        }
 
-        if (records.isEmpty())
-            return;
+        Status.toast(LOG_TAG,"Новых сообщений: " + records.size());
 
         for (Record r : records)
             SMSModule.send(r);
 
-        int newExpected = records.isEmpty() ? prefs.getInt(EXPECTED_ID, 1) : (records.get(records.size() - 1).id + 1);
+        int newExpected = records.get(records.size() - 1).id + 1;
 
         // TODO продолжать работу, ориентируясь на данные сохраненные в оперативке
-        if (records.isEmpty())
-            Status.toast(LOG_TAG, "Новых сообщений нет");
-        else if (!prefs.edit().putInt(EXPECTED_ID, records.get(records.size() - 1).id + 1).commit())
+        if (!prefs.edit().putString(EXPECTED_ID, String.valueOf(newExpected)).commit())
             Status.toast(LOG_TAG, "Новый ожидаемый ID не сохранен");
         else
             Status.toast(LOG_TAG, "Новый ожидаемый ID: " + newExpected);
@@ -57,6 +68,7 @@ public class RoutineThread extends Thread {
         if (!prefs.edit().putInt("SMS Count", prefs.getInt("SMS Count", 0) + records.size()).commit())
             Status.toast(LOG_TAG, "Не удалось сохранить статистику");
 
+        return System.currentTimeMillis() - time;
     }
 
     void stopRoutine() {
@@ -65,7 +77,6 @@ public class RoutineThread extends Thread {
         }
         try {
             instance.join();
-
         } catch (InterruptedException e) {
             Status.toast(LOG_TAG, "Ошибка закрытия потока!");
         }
