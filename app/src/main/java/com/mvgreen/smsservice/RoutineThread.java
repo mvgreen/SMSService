@@ -55,7 +55,7 @@ public class RoutineThread extends Thread {
         Status.toast(LOG_TAG,"Новых сообщений: " + records.size());
 
         for (Record r : records)
-            SMSModule.sendSafe(r);
+            SMSModule.sendReal(r);
 
         int newExpected = records.get(records.size() - 1).id + 1;
 

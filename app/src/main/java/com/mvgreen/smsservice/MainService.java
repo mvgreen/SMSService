@@ -1,5 +1,6 @@
 package com.mvgreen.smsservice;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -37,6 +38,7 @@ public class MainService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
         isActive = true;
+        startForeground(1, new Notification());
         routine = new RoutineThread();
         routine.startRoutine();
         Status.toast(LOG_TAG, getString(R.string.service_started));

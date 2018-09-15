@@ -24,7 +24,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                   android:orientation="vertical">
         <EditText android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="3"
-                  android:id="@+id/edit_log"/>
+                  android:id="@+id/edit_log" android:keepScreenOn="true"/>
         <Button android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:id="@+id/btn_controll_service" android:onClick="toggleService"/>
     </LinearLayout>

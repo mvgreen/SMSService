@@ -28,20 +28,22 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // TODO обновлять при повторном открытии
+
         instance = this;
-        Status.toast(LOG_TAG, "В onCreate");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initView();
     }
 
     @Override
     protected void onRestart() {
-        //initView();
         super.onRestart();
     }
 
     private void initView() {
-        Status.toast(LOG_TAG, "В initView");
         updateInterface();
         // TODO предусматривать открытие свернутого приложения с запущенным сервисом
         Button btn = (Button) findViewById(R.id.btn_controll_service);
